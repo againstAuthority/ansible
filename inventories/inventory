@@ -1,2 +1,2 @@
 [main-host]
-172.17.0.1 ansible_sudo_pass='dmitry' ansible_ssh_user=dmitry
+172.17.0.1
