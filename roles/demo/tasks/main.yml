@@ -1,5 +1,28 @@
-- name: Deploy disabled module
-  shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user=dmitry --password=admin --commands="deploy /home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --disabled"'
+- name: Search PID
+  #command: pgrep -f "{{ pgrep_str | default(realpath_installdir.stdout) }}" -u "{{ ansible_user }}"
+  command: pgrep -f wildfly
+  register: pid
+  failed_when: pid.rc > 1 # rc=1 when pid not found
+
+- name: Get first dump with undeployed modules
+  shell: "jstack -l {{ pid.stdout_lines|join(' ') }} > /opt/wildfly/standalone/log/first_dump.txt"
+
+- name: Deploy modules
+  shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user=dmitry --password=admin --commands="deploy /home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --enabled"'
 #  shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user={{ demo.user }} --password={{ demo.password }} --commands="deploy /home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --disabled"'
 #  args:
 #    chdir: "{{ vars[role_name].installdir }}"
+
+- name: Get second dump with deployed modules
+  shell: "jstack -l {{ pid.stdout_lines|join(' ') }} > /opt/wildfly/standalone/log/second_dump.txt"
+
+- name: Undeploy modules
+  command: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user=dmitry --password=admin  --commands="undeploy hello-world-project-for-docker-1.0-SNAPSHOT.ear --keep-content"'
+  ignore_errors: true
+
+- name: Pause for 1 minute to stop modules
+  pause:
+    minutes: 1
+
+- name: Get third dump with undeployed modules
+  shell: "jstack -l {{ pid.stdout_lines|join(' ') }} > /opt/wildfly/standalone/log/third_dump.txt"
