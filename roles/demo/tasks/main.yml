@@ -1,4 +1,4 @@
 - name: Deploy disabled MD
-  shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --commands="deploy ./home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --disabled"'
+  shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --commands="deploy /home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --disabled"'
 #  args:
 #    chdir: "{{ vars[role_name].installdir }}"
