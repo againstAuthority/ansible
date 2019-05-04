@@ -1,4 +1,4 @@
-wildfly:
+demo:
   user:               dmitry # имя пользователя для ManagementRealm
   password:           admin # пароль пользователя для ManagementRealm
   mgmtPort:           "9990" # jboss.management.http.port
