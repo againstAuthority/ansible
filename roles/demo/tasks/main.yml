@@ -5,7 +5,7 @@
   failed_when: pid.rc > 1 # rc=1 when pid not found
 
 - name: Get first dump with undeployed modules
-  shell: "sudo jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/first_dump.txt"
+  shell: "sudo -i jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/first_dump.txt"
 
 - name: Deploy modules
   shell: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user=dmitry --password=admin --commands="deploy /home/dmitry/Desktop/modules/hello-world-project-for-docker-1.0-SNAPSHOT.ear  --name=hello-world-project-for-docker-1.0-SNAPSHOT.ear --enabled"'
@@ -14,7 +14,7 @@
 #    chdir: "{{ vars[role_name].installdir }}"
 
 - name: Get second dump with deployed modules
-  shell: "sudo jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/second_dump.txt"
+  shell: "sudo -i jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/second_dump.txt"
 
 - name: Undeploy modules
   command: '/opt/wildfly/bin/jboss-cli.sh --connect --controller=172.17.0.1:9990 --user=dmitry --password=admin  --commands="undeploy hello-world-project-for-docker-1.0-SNAPSHOT.ear --keep-content"'
@@ -25,4 +25,4 @@
     minutes: 1
 
 - name: Get third dump with undeployed modules
-  shell: "sudo jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/third_dump.txt"
+  shell: "sudo -i jstack -l {{ pid.stdout_lines|join(' ') }} > /home/dmitry/Desktop/logs/third_dump.txt"
